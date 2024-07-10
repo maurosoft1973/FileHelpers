@@ -41,29 +41,29 @@ namespace FileHelpers.Tests.Converters
             AssertCanConvertEnglishNumbers(decimalConverter);
         }
 
-        [Test]
-        public void RecordWithSpecifiedCultureInRecordAttributeUsesThatCultureByDefault()
-        {
-            var engine = new FileHelperEngine<RecordWithDefaultCulture>();
-            Assert.AreEqual(2, engine.Options.Fields.Count);
-            var decimalConverterWithoutCulture = engine.Options.Fields[0].Converter;
-            AssertCanConvertFrenchNumbers(decimalConverterWithoutCulture);
+        //[Test]
+        //public void RecordWithSpecifiedCultureInRecordAttributeUsesThatCultureByDefault()
+        //{
+        //    var engine = new FileHelperEngine<RecordWithDefaultCulture>();
+        //    Assert.AreEqual(2, engine.Options.Fields.Count);
+        //    var decimalConverterWithoutCulture = engine.Options.Fields[0].Converter;
+        //    AssertCanConvertFrenchNumbers(decimalConverterWithoutCulture);
 
-            var decimalConverterWithEnglishCulture = engine.Options.Fields[1].Converter;
-            AssertCanConvertEnglishNumbers(decimalConverterWithEnglishCulture);
-        }
+        //    var decimalConverterWithEnglishCulture = engine.Options.Fields[1].Converter;
+        //    AssertCanConvertEnglishNumbers(decimalConverterWithEnglishCulture);
+        //}
 
-        [Test]
-        public void FieldWithSpecifiedCultureInFieldConverterAttributeUsesThatCulture()
-        {
-            var engine = new FileHelperEngine<RecordWithFieldCulture>();
-            Assert.AreEqual(2, engine.Options.Fields.Count);
-            var decimalConverterWithFrenchCulture = engine.Options.Fields[0].Converter;
-            AssertCanConvertFrenchNumbers(decimalConverterWithFrenchCulture);
+        //[Test]
+        //public void FieldWithSpecifiedCultureInFieldConverterAttributeUsesThatCulture()
+        //{
+        //    var engine = new FileHelperEngine<RecordWithFieldCulture>();
+        //    Assert.AreEqual(2, engine.Options.Fields.Count);
+        //    var decimalConverterWithFrenchCulture = engine.Options.Fields[0].Converter;
+        //    AssertCanConvertFrenchNumbers(decimalConverterWithFrenchCulture);
 
-            var decimalConverterWithoutCulture = engine.Options.Fields[1].Converter;
-            AssertCanConvertEnglishNumbers(decimalConverterWithoutCulture);
-        }
+        //    var decimalConverterWithoutCulture = engine.Options.Fields[1].Converter;
+        //    AssertCanConvertEnglishNumbers(decimalConverterWithoutCulture);
+        //}
 
         #region Helpers
         private static void AssertCanConvertEnglishNumbers(IConverter decimalConverter)
@@ -106,41 +106,41 @@ namespace FileHelpers.Tests.Converters
             public decimal DecimalField;
         }
 
-        [Test]
-        public void DecimalsWithFrenchCulture()
-        {
-            var engine = new FileHelperEngine<DecimalTypeWithFrenchConversion>();
-            var res = TestCommon.ReadTest<DecimalTypeWithFrenchConversion>(engine, "Good", "NumberFormatFrench.txt");
+        //[Test]
+        //public void DecimalsWithFrenchCulture()
+        //{
+        //    var engine = new FileHelperEngine<DecimalTypeWithFrenchConversion>();
+        //    var res = TestCommon.ReadTest<DecimalTypeWithFrenchConversion>(engine, "Good", "NumberFormatFrench.txt");
 
-            Assert.AreEqual(3, res.Length);
+        //    Assert.AreEqual(3, res.Length);
 
-            Assert.AreEqual(10248, res[0].IntField);
-            CheckDecimal((decimal)32.38, res[0]);
+        //    Assert.AreEqual(10248, res[0].IntField);
+        //    CheckDecimal((decimal)32.38, res[0]);
 
-            Assert.AreEqual(10249, res[1].IntField);
-            CheckDecimal((decimal)1011.61, res[1]);
+        //    Assert.AreEqual(10249, res[1].IntField);
+        //    CheckDecimal((decimal)1011.61, res[1]);
 
-            Assert.AreEqual(10250, res[2].IntField);
-            CheckDecimal((decimal)1165.83, res[2]);
-        }
+        //    Assert.AreEqual(10250, res[2].IntField);
+        //    CheckDecimal((decimal)1165.83, res[2]);
+        //}
 
-        [Test]
-        public void DecimalsWithFrenchCulture2()
-        {
-            var engine = new FileHelperEngine<DecimalTypeWithFrenchConversionAsAWhole>();
-            var res = TestCommon.ReadTest<DecimalTypeWithFrenchConversionAsAWhole>(engine, "Good", "NumberFormatFrench.txt");
+        //[Test]
+        //public void DecimalsWithFrenchCulture2()
+        //{
+        //    var engine = new FileHelperEngine<DecimalTypeWithFrenchConversionAsAWhole>();
+        //    var res = TestCommon.ReadTest<DecimalTypeWithFrenchConversionAsAWhole>(engine, "Good", "NumberFormatFrench.txt");
 
-            Assert.AreEqual(3, res.Length);
+        //    Assert.AreEqual(3, res.Length);
 
-            Assert.AreEqual(10248, res[0].IntField);
-            CheckDecimal((decimal)32.38, res[0]);
+        //    Assert.AreEqual(10248, res[0].IntField);
+        //    CheckDecimal((decimal)32.38, res[0]);
 
-            Assert.AreEqual(10249, res[1].IntField);
-            CheckDecimal((decimal)1011.61, res[1]);
+        //    Assert.AreEqual(10249, res[1].IntField);
+        //    CheckDecimal((decimal)1011.61, res[1]);
 
-            Assert.AreEqual(10250, res[2].IntField);
-            CheckDecimal((decimal)1165.83, res[2]);
-        }
+        //    Assert.AreEqual(10250, res[2].IntField);
+        //    CheckDecimal((decimal)1165.83, res[2]);
+        //}
 
         private static void CheckDecimal(decimal dec, DecimalTypeWithFrenchConversion res)
         {

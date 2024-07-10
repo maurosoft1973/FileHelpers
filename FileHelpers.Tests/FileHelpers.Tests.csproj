@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileHelpers.ExcelNPOIStorage\FileHelpers.ExcelNPOIStorage.csproj" />
     <ProjectReference Include="..\FileHelpers\FileHelpers.csproj" />
   </ItemGroup>
 
