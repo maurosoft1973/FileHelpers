@@ -32,7 +32,7 @@ namespace FileHelpers
     /// <para>(for Master-Detail check the <see cref="MasterDetailEngine"/>)</para>
     /// </summary>
     [DebuggerDisplay("ErrorMode: {ErrorManager.ErrorMode.ToString()}. Encoding: {Encoding.EncodingName}")]
-    public sealed class MultiRecordEngine
+    public class MultiRecordEngine
         :
             EventEngineBase<object>,
             IEnumerable,
@@ -50,7 +50,7 @@ namespace FileHelpers
         /// <summary>
         /// The Selector used by the engine in Read operations to determine the Type to use.
         /// </summary>
-        public RecordTypeSelector RecordSelector
+        public virtual RecordTypeSelector RecordSelector
         {
             get { return mRecordSelector; }
             set { mRecordSelector = value; }
@@ -106,7 +106,7 @@ namespace FileHelpers
         /// </summary>
         /// <param name="fileName">The file with the records.</param>
         /// <returns>The read records of different types all mixed.</returns>
-        public object[] ReadFile(string fileName)
+        public virtual object[] ReadFile(string fileName)
         {
             using (var fs = new StreamReader(fileName, mEncoding, true, DefaultReadBufferSize))
                 return ReadStream(fs);
@@ -121,13 +121,13 @@ namespace FileHelpers
         /// </summary>
         /// <param name="reader">Stream we are reading from</param>
         /// <returns>Array of objects</returns>
-        public object[] ReadStream(TextReader reader)
+        public virtual object[] ReadStream(TextReader reader)
         {
             return ReadStream(new NewLineDelimitedRecordReader(reader));
         }
 
         /// <include file='MultiRecordEngine.docs.xml' path='doc/ReadStream/*'/>
-        public object[] ReadStream(IRecordReader reader)
+        public virtual object[] ReadStream(IRecordReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader), "The reader of the Stream can't be null");
@@ -254,7 +254,7 @@ namespace FileHelpers
         #region "  ReadString  "
 
         /// <include file='MultiRecordEngine.docs.xml' path='doc/ReadString/*'/>
-        public object[] ReadString(string source)
+        public virtual object[] ReadString(string source)
         {
             var reader = new InternalStringReader(source);
             object[] res = ReadStream(reader);
@@ -267,13 +267,13 @@ namespace FileHelpers
         #region "  WriteFile  "
 
         /// <include file='MultiRecordEngine.docs.xml' path='doc/WriteFile/*'/>
-        public void WriteFile(string fileName, IEnumerable records)
+        public virtual void WriteFile(string fileName, IEnumerable records)
         {
             WriteFile(fileName, records, -1);
         }
 
         /// <include file='MultiRecordEngine.docs.xml' path='doc/WriteFile2/*'/>
-        public void WriteFile(string fileName, IEnumerable records, int maxRecords)
+        public virtual void WriteFile(string fileName, IEnumerable records, int maxRecords)
         {
             using (var fs = new StreamWriter(fileName, false, mEncoding, DefaultWriteBufferSize))
             {
@@ -291,13 +291,13 @@ namespace FileHelpers
         /// </summary>
         /// <param name="writer">Where data is written</param>
         /// <param name="records">records to write to the file</param>
-        public void WriteStream(TextWriter writer, IEnumerable records)
+        public virtual void WriteStream(TextWriter writer, IEnumerable records)
         {
             WriteStream(writer, records, -1);
         }
 
         /// <include file='MultiRecordEngine.docs.xml' path='doc/WriteStream2/*'/>
-        public void WriteStream(TextWriter writer, IEnumerable records, int maxRecords)
+        public virtual void WriteStream(TextWriter writer, IEnumerable records, int maxRecords)
         {
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer), "The writer of the Stream can be null");
@@ -346,13 +346,13 @@ namespace FileHelpers
         #region "  WriteString  "
 
         /// <include file='MultiRecordEngine.docs.xml' path='doc/WriteString/*'/>
-        public string WriteString(IEnumerable records)
+        public virtual string WriteString(IEnumerable records)
         {
             return WriteString(records, -1);
         }
 
         /// <include file='MultiRecordEngine.docs.xml' path='doc/WriteString2/*'/>
-        public string WriteString(IEnumerable records, int maxRecords)
+        public virtual string WriteString(IEnumerable records, int maxRecords)
         {
             var sb = new StringBuilder();
             var writer = new StringWriter(sb);
@@ -367,13 +367,13 @@ namespace FileHelpers
         #region "  AppendToFile  "
 
         /// <include file='MultiRecordEngine.docs.xml' path='doc/AppendToFile1/*'/>
-        public void AppendToFile(string fileName, object record)
+        public virtual void AppendToFile(string fileName, object record)
         {
             AppendToFile(fileName, new[] { record });
         }
 
         /// <include file='MultiRecordEngine.docs.xml' path='doc/AppendToFile2/*'/>
-        public void AppendToFile(string fileName, IEnumerable records)
+        public virtual void AppendToFile(string fileName, IEnumerable records)
         {
             using (
                 TextWriter writer = StreamHelper.CreateFileAppender(fileName,
@@ -420,7 +420,7 @@ namespace FileHelpers
         private object mLastRecord;
 
         /// <include file='FileHelperAsyncEngine.docs.xml' path='doc/LastRecord/*'/>
-        public object LastRecord
+        public virtual object LastRecord
         {
             get { return mLastRecord; }
         }
@@ -433,7 +433,7 @@ namespace FileHelpers
         /// Read a generic file as delimited by newlines
         /// </summary>
         /// <param name="reader">Text reader</param>
-        public void BeginReadStream(TextReader reader)
+        public virtual void BeginReadStream(TextReader reader)
         {
             BeginReadStream(new NewLineDelimitedRecordReader(reader));
         }
@@ -445,7 +445,7 @@ namespace FileHelpers
         /// </summary>
         /// <param name="reader">The source Reader.</param>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public void BeginReadStream(IRecordReader reader)
+        public virtual void BeginReadStream(IRecordReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
@@ -483,7 +483,7 @@ namespace FileHelpers
         /// data)
         /// </summary>
         /// <param name="fileName">The source file.</param>
-        public void BeginReadFile(string fileName)
+        public virtual void BeginReadFile(string fileName)
         {
             BeginReadStream(new StreamReader(fileName, mEncoding, true, DefaultReadBufferSize));
         }
@@ -494,7 +494,7 @@ namespace FileHelpers
         /// data)
         /// </summary>
         /// <param name="sourceData">The source String</param>
-        public void BeginReadString(string sourceData)
+        public virtual void BeginReadString(string sourceData)
         {
             if (sourceData == null)
                 sourceData = string.Empty;
@@ -509,7 +509,7 @@ namespace FileHelpers
         /// Useful to long opened async engines that wants to save pending
         /// values or for engines used for logging.
         /// </summary>
-        public void Flush()
+        public virtual void Flush()
         {
             if (mAsyncWriter != null)
                 mAsyncWriter.Flush();
@@ -520,7 +520,7 @@ namespace FileHelpers
         /// <summary>
         /// Close the underlining Readers and Writers. (if any)
         /// </summary>
-        public void Close()
+        public virtual void Close()
         {
             try
             {
@@ -554,7 +554,7 @@ namespace FileHelpers
         /// Reads the next record from the source
         /// </summary>
         /// <returns>The record just read</returns>
-        public object ReadNext()
+        public virtual object ReadNext()
         {
             if (mAsyncReader == null)
                 throw new BadUsageException("Before calling ReadNext you must call BeginReadFile or BeginReadStream.");
@@ -660,7 +660,7 @@ namespace FileHelpers
         /// </summary>
         /// <param name="numberOfRecords">The count of records to read</param>
         /// <returns>An Array with all the read record objects</returns>
-        public object[] ReadNexts(int numberOfRecords)
+        public virtual object[] ReadNexts(int numberOfRecords)
         {
             if (mAsyncReader == null)
                 throw new BadUsageException("Before calling ReadNext you must call BeginReadFile or BeginReadStream.");
@@ -754,7 +754,7 @@ namespace FileHelpers
         /// <see cref="BeginAppendToFile" /> method.
         /// </summary>
         /// <param name="record">The record to write.</param>
-        public void WriteNext(object record)
+        public virtual void WriteNext(object record)
         {
             if (mAsyncWriter == null)
                 throw new BadUsageException("Before calling WriteNext you must call BeginWriteFile or BeginWriteStream.");
@@ -772,7 +772,7 @@ namespace FileHelpers
         /// <see cref="BeginAppendToFile" /> method.
         /// </summary>
         /// <param name="records">The records to write (Can be an array, ArrayList, etc)</param>
-        public void WriteNexts(IEnumerable records)
+        public virtual void WriteNexts(IEnumerable records)
         {
             if (mAsyncWriter == null)
                 throw new BadUsageException("Before calling WriteNext you must call BeginWriteFile or BeginWriteStream.");
@@ -808,7 +808,7 @@ namespace FileHelpers
         ///	<b><see cref="Close" /></b> method.</para>
         ///	</remarks>
         ///	<param name="writer">To stream to writes to.</param>
-        public void BeginWriteStream(TextWriter writer)
+        public virtual void BeginWriteStream(TextWriter writer)
         {
             if (writer == null)
                 throw new ArgumentException("The TextWriter can´t be null.", nameof(writer));
@@ -835,7 +835,7 @@ namespace FileHelpers
         ///	<b><see cref="Close" /></b> method.</para>
         ///	</remarks>
         /// <param name="fileName">The file path to be opened for write.</param>
-        public void BeginWriteFile(string fileName)
+        public virtual void BeginWriteFile(string fileName)
         {
             BeginWriteStream(new StreamWriter(fileName, false, mEncoding, DefaultWriteBufferSize));
         }
@@ -849,7 +849,7 @@ namespace FileHelpers
         ///	<para>When you finish to append to the file you must call
         ///	<b><see cref="Close" /></b> method.</para></remarks>
         ///	<param name="fileName">The file path to be opened to write at the end.</param>
-        public void BeginAppendToFile(string fileName)
+        public virtual void BeginAppendToFile(string fileName)
         {
             mAsyncWriter = StreamHelper.CreateFileAppender(fileName, mEncoding, false, true, DefaultWriteBufferSize);
             HeaderText = string.Empty;
