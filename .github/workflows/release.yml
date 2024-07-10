@@ -1,0 +1,13 @@
+name: Release
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  release:
+    uses: maurosoft1973/actions-common-for-net/.github/workflows/workflow-common-setup-and-build-release.yml@main
+    with:
+      configuration: Release
+    secrets:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
